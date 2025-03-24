@@ -17,6 +17,17 @@ plugin_config_path = os.environ.get(
     "PYZETTEL_PLUGIN_CONFIG", default_plugin_config_path
 )
 
+# from https://stackoverflow.com/a/58018765
+def recursive_help(cmd, parent=None):
+    ctx = click.core.Context(cmd, info_name=cmd.name, parent=parent)
+    print("```bash")
+    print(cmd.get_help(ctx))
+    print("```\n")
+    commands = getattr(cmd, 'commands', {})
+    for sub in commands.values():
+        recursive_help(sub, ctx)
+        
+
 
 @dataclass
 class CLIContext:
@@ -34,7 +45,8 @@ class CLIContext:
     "--log-level", "-l", type=LogLevel(), default="WARNING", help="Set logging level"
 )
 @click.pass_context
-def entry_point(ctx: click.Context, config_file: str, log_level: int):
+def pyzettel(ctx: click.Context, config_file: str, log_level: int):
+    "pyzettel command line interface"
     logging.basicConfig(level=log_level)
     try:
         config = load_config(config_file)
@@ -43,12 +55,10 @@ def entry_point(ctx: click.Context, config_file: str, log_level: int):
     ctx.ensure_object(CLIContext)
     ctx.obj.config = config
 
-
-#@entry_point.group()
-#@click.pass_context
-#def plugin(ctx: click.Context):
-#    pass
-
+@pyzettel.command()
+def dumphelp():
+    "Show all CLI commands and options"
+    recursive_help(pyzettel)
 
 cli_modules = Path(__file__).parent.glob("*/__init__.py")
 for module in cli_modules:
@@ -56,10 +66,10 @@ for module in cli_modules:
     logger.debug(f"Importing module {module_name}")
     module = import_module(f".{module_name}", __package__)
     for command in module.commands:
-        entry_point.add_command(command)
+        pyzettel.add_command(command)
 
 plugin_config = load_plugin_config(plugin_config_path)
 logging.basicConfig(
     level=plugin_config.get("loader_config", dict()).get("log_level", "WARNING")
 )
-register_plugins(plugin_config.get("plugins", dict()), entry_point)
+register_plugins(plugin_config.get("plugins", dict()), pyzettel)
