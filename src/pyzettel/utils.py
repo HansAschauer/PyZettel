@@ -33,10 +33,13 @@ def intdate(value: datetime.datetime, num_digits=14, factor=1000) -> str:
     ts = value.timestamp()
     return str(int(ts * factor)).rjust(num_digits, "0")
 
+def yyyymmdd(value: datetime.datetime) -> str:
+    return value.strftime("%Y%m%d%H%M%S")
 
 env = jinja2.Environment()
 env.filters["hexdate"] = hexdate
 env.filters["intdate"] = intdate
+env.filters["yyyymmdd"] = yyyymmdd
 
 
 def generate_id(

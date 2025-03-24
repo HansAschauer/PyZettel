@@ -1,7 +1,7 @@
 import click
 import platformdirs
 
-from click_logging_config import LoggingConfiguration  # type: ignore
+#from click_logging_config import LoggingConfiguration  # type: ignore
 
 
 default_config_path = platformdirs.user_config_path("pyzettel")
@@ -24,6 +24,6 @@ def common_options(fn):
     )(fn)
 
 
-logging_config = LoggingConfiguration(
-    log_level="info", enable_console_logging=True, enable_file_logging=False
-)
+#logging_config = LoggingConfiguration(
+#    log_level="info", enable_console_logging=True, enable_file_logging=False
+#)
