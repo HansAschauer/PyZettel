@@ -9,6 +9,7 @@ from ...config import Config, AIOptions
 default_data_path = platformdirs.user_data_path("pyzettel")
 cache_dir = platformdirs.user_cache_path("pyzettel")
 default_config_path = platformdirs.user_config_path("pyzettel")
+plugins_config_file = platformdirs.user_config_path("pyzettel_plugins")
 
 mkdocs_template = """
 site_name: My Zettelkasten
@@ -16,8 +17,46 @@ theme:
   name: zettelkasten-solarized-light
 plugins:
 - tags
-- zettelkasten"""
+- zettelkasten
+markdown_extensions:
+- admonition
+- meta
+- codehilite:
+- pymdownx.superfences
 
+nav:
+- start: index.md
+"""
+
+pyproject_template = """[project]
+name = "zettelkasten"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "mkdocs-zettelkasten>=0.1.9",
+    "mkdocs>=1.6.1",
+]
+"""
+
+plugins_config_template = """
+plugins:
+  # uncomment to enable the AI plugin
+  #pyzettel.plugins.ai:
+  # uncomment to enable the hello plugin
+  #pyzettel.plugins.hello:
+  # uncomment to enable the rag (retrieval augmented generation) plugin
+  #pyzettel.plugins.rag:
+  #  api_name: "google"
+  #  api_key: "google cloud api key"
+  #  api_key_keyword: "google_api_key"
+  #  additional_embedder_init_options:
+  #    model: "models/embedding-001"    
+loader_config:
+  log_level: WARNING
+
+"""
 
 @click.command()
 @click.option(
@@ -25,9 +64,6 @@ plugins:
     "-c",
     default=default_config_path,
     help="Path to the configuration file",
-)
-@click.option(
-    "--log-level", "-l", type=LogLevel(), default="INFO", help="Set logging level"
 )
 @click.option(
     "--zettelkasten-dir",
@@ -44,6 +80,10 @@ plugins:
 @click.option(
     "--mkdocs/--no-mkdocs", "-m/-M", default=True, help="Generate mkdocs configuration"
 )
+@click.option(
+    "--pyproject/--no-pyproject", "-p/-P", default=True, help="Generate pyproject.toml"
+)
+
 @click.pass_context
 def init(
     ctx: click.Context,
@@ -51,6 +91,7 @@ def init(
     zettelkasten_dir: str,
     id_template: str,
     mkdocs: bool,
+    pyproject: bool,
 ):
     "Initialize a new pyzettel configuration"
     config_file_path = pathlib.Path(config_file)
@@ -82,6 +123,22 @@ def init(
                 f.write(mkdocs_template)
         else:
             click.echo("mkdocs.yml already exists. No action taken.")
+    if pyproject:
+        pyproject_toml = default_data_path / "pyproject.toml"
+        if not pyproject_toml.exists():
+            with open(pyproject_toml, "w") as f:
+                f.write(pyproject_template)
+        else:
+            click.echo("pyproject.toml already exists. No action taken.")
+            
+    if not plugins_config_file.exists():
+        plugins_config_file.parent.mkdir(parents=True, exist_ok=True)
+        with open(plugins_config_file, "w") as f:
+            f.write(plugins_config_template)
+        click.echo(f"Created default plugins config file at {plugins_config_file}")
+    else:
+        click.echo(f"Plugins config file already exists at {plugins_config_file}")
+    
             
     cache_path = pathlib.Path(cache_dir)
     cache_path.mkdir(exist_ok=True)
