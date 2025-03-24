@@ -19,7 +19,20 @@
 
 ## Installation
 
-TBD: Provide installation instructions here (e.g., using pip, cloning the repository, etc.).
+### Development version from github
+
+In order to install PyZettel, clone it from [github](https://github.com/HansAschauer/PyZettel):
+```bash
+git clone git@github.com:HansAschauer/PyZettel.git
+```
+
+This version uses `uv` to manage dependencies etc. See the [`uv`
+documentation](https://docs.astral.sh/uv/getting-started/installation/) for
+installation instructions.
+
+Download all dependencies using `uv sync --extra=ai --extra=ai-rag`.
+
+Run `pyzettel` using `uv run pyzettel --help`.
 
 ## Usage
 
