@@ -1,6 +1,5 @@
 import click
 from ...zettel import Zettel
-from ..common_options import common_options
 from ...config import load_config
 from ...utils import filename_from_id
 import subprocess
@@ -31,10 +30,8 @@ from rich.markdown import Markdown
     is_flag=True,
     help="Show filename of zettel.",
 )
-
-@common_options
 def show(
-    id: str, show_title: bool, editor: bool, config_file: str, show_filename: bool,
+    id: str, show_title: bool, editor: bool, show_filename: bool,
 ):
     "Show a zettel on the command line or in an editor."
     config = load_config(config_file)
