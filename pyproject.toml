@@ -46,5 +46,6 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "mkdocs>=1.6.1",
+    "pymdown-extensions>=10.14.3",
     "pytest>=8.3.4",
 ]
