@@ -37,8 +37,8 @@ my_prompt = ChatPromptTemplate(
             "You are question-answering bot in a RAG pipeline. Answer the question using "
             "the retrieved context.  If you don't know the answer, just say that you don't "
             "know. Use one to five paragraphs maximum and keep the answer concise. The answer "
-            "MUST be formatted in Markdown. You may"
-            "Add code snippets when it is helpful. Start like this:\n"
+            "MUST be formatted in Markdown. You may "
+            "add code snippets when it is helpful. Start like this:\n"
             "# Question\n\n<question>\n\n# Answer\n\n<answer>",
         ),
         ("human", "Question: {question}\n\nContext: {context}\n\nAnswer:"),
