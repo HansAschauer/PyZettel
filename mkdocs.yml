@@ -1,0 +1,11 @@
+site_name: PyZettel Docs
+
+markdown_extensions:
+- admonition
+- meta
+- codehilite:
+- pymdownx.superfences
+
+
+nav:
+- start: index.md

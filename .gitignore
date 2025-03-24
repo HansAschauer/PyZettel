@@ -129,3 +129,4 @@ dmypy.json
 experiments/
 tests/pyzettel
 tests/cache/
+.pyzettel
