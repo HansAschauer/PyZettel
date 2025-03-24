@@ -21,7 +21,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pyzettel = "pyzettel.cli.cli:entry_point"
+pyzettel = "pyzettel.cli.cli:pyzettel"
 pyzettel-init = "pyzettel.cli.init:init"
 
 [project.optional-dependencies]
