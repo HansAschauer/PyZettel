@@ -7,6 +7,10 @@
 
 `PyZettel` is a command-line interface tool designed to help you organize your [Zettelkasten](https://en.wikipedia.org/wiki/Zettelkasten) efficiently. With integrated AI features, PyZettel automates tasks like generating summaries from web pages, performing similarity searches for content and tags, and providing interactive capabilities to engage with your Zettelkasten via a retrieval-augmented generation pipeline. PyZettel is developed in Python and offers a robust plugin system, making it versatile for various use cases.
 
+## Documentation
+
+Documentation is available on [github-pages](https://hansaschauer.github.io/PyZettel/).
+
 ## Features
 
 - Create and manage Zettels with ease.
