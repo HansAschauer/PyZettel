@@ -30,11 +30,12 @@ from rich.markdown import Markdown
     is_flag=True,
     help="Show filename of zettel.",
 )
+@click.pass_context
 def show(
-    id: str, show_title: bool, editor: bool, show_filename: bool,
+    ctx: click.Context, id: str, show_title: bool, editor: bool, show_filename: bool,
 ):
     "Show a zettel on the command line or in an editor."
-    config = load_config(config_file)
+    config = ctx.obj.config
     filename = filename_from_id(id, config)
     z = Zettel.from_file(filename)
     
