@@ -1,7 +1,7 @@
 from . import config as conf_module
 from .improve import improve
 from .scrape import scrape
-from .search import search
+from .search import search, index
 from .tags import tags
 from .create import create
 
@@ -30,6 +30,7 @@ def ai():
 ai.add_command(improve)
 ai.add_command(scrape)
 ai.add_command(search)
+ai.add_command(index)
 ai.add_command(tags)
 ai.add_command(create)
 
