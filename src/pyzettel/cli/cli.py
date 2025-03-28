@@ -47,6 +47,9 @@ class CLIContext:
 @click.pass_context
 def pyzettel(ctx: click.Context, config_file: str, log_level: int):
     "pyzettel command line interface"
+    # remove logging handlers, as described here: https://stackoverflow.com/a/12158233
+    for handler in logging.root.handlers[:]:
+        logging.root.removeHandler(handler)
     logging.basicConfig(level=log_level)
     try:
         config = load_config(config_file)
@@ -70,6 +73,7 @@ for module in cli_modules:
 
 plugin_config = load_plugin_config(plugin_config_path)
 logging.basicConfig(
-    level=plugin_config.get("loader_config", dict()).get("log_level", "WARNING")
+    level = plugin_config.loader_config.log_level
+    
 )
-register_plugins(plugin_config.get("plugins", dict()), pyzettel)
+register_plugins(plugin_config.plugins, pyzettel)
