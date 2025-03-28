@@ -17,7 +17,9 @@ from pyzettel.zettel import Zettel
 from .zettel_splitter import zettel_to_docs
 
 import click
-from .config import config, get_embedder
+from pyzettel.cli.plugins import get_embedder_factory, get_llm_factory
+
+from .config import config#, get_embedder
 
 import logging
 logger = logging.getLogger(__name__)
@@ -49,7 +51,7 @@ def update(ctx: click.Context, llm_model: str | None):
             assert isinstance(llm_model, str)
 
 
-        embedding = get_embedder("retrieval_query")
+        embedding = get_embedder_factory()()
 
         vectordb = Chroma(
             client_settings=Settings(anonymized_telemetry=False),

@@ -1,6 +1,5 @@
 from langchain_chroma import Chroma
 from chromadb.config import Settings
-from langchain_openai.chat_models import ChatOpenAI
 
 from langchain_core.utils.utils import convert_to_secret_str
 import pathlib
@@ -19,8 +18,8 @@ from dataclasses import dataclass, field
 import os
 
 import click
-from .config import config, get_embedder
-
+from .config import config  # , get_embedder
+from pyzettel.cli.plugins import get_embedder_factory, get_llm_factory
 from rich.console import Console
 from rich.markdown import Markdown
 import logging
@@ -96,11 +95,6 @@ def ask(
     os.environ.pop("LANGCHAIN_TRACING_V2", None)
     os.environ["LANGCHAIN_API_KEY"] = "xx"
     with tracing_context(enabled=False):
-        cfg = pyzettel.config.load_config(platformdirs.user_config_dir("pyzettel"))
-        ai_cfg = cfg.ai_options
-        assert ai_cfg is not None
-        api_key = convert_to_secret_str(ai_cfg.api_key)
-
         chroma_data_dir = (
             pathlib.Path(
                 config.get(
@@ -109,16 +103,8 @@ def ask(
             )
             / "chroma_data"
         )
-        if llm_model is None:
-            llm_model = config.get("llm_model", ai_cfg.engine)
-            assert isinstance(llm_model, str)
 
-        base_url = ai_cfg.base_url
-
-        #embedding = OpenAIEmbeddings(
-        #    api_key=api_key, base_url=base_url, model=ai_cfg.embeddings_engine
-        #)
-        embedding = get_embedder("retrieval_query")
+        embedding = get_embedder_factory()()
 
         vectordb = Chroma(
             client_settings=Settings(anonymized_telemetry=False),
@@ -127,7 +113,8 @@ def ask(
 
         # https://python.langchain.com/docs/versions/migrating_chains/retrieval_qa/
         # llm = ChatOpenAI(api_key=api_key, base_url=base_url, model="mistral-nemo-instruct-2407")
-        llm = ChatOpenAI(api_key=api_key, base_url=base_url, model=llm_model)
+        
+        llm = get_llm_factory()()
 
         formatter = DocumentFormatter(vectordb)
         qa_chain = (

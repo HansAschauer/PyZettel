@@ -14,8 +14,9 @@ from langsmith import tracing_context
 import pyzettel.config
 
 from .zettel_splitter import zettel_to_docs
-from .config import config, get_embedder
+from .config import config # , get_embedder
 import click
+from pyzettel.cli.plugins import get_embedder_factory
 
 
 @click.command()
@@ -25,8 +26,6 @@ def init_db():
     
     with tracing_context(enabled=False):
         cfg = pyzettel.config.load_config(platformdirs.user_config_dir("pyzettel"))
-        ai_cfg = cfg.ai_options
-        assert ai_cfg is not None
 
         chroma_data_dir = (
             pathlib.Path(
@@ -36,9 +35,7 @@ def init_db():
         )
         chroma_data_dir.mkdir(parents=True, exist_ok=True)
 
-        api_key = convert_to_secret_str(ai_cfg.api_key)
         os.environ["LANGSMITH_TRACING"] = "false"
-        base_url = ai_cfg.base_url
 
         zettels = list(
             (pathlib.Path(cfg.zettelkasten_proj_dir) / cfg.zettelkasten_subdir).glob(
@@ -54,11 +51,7 @@ def init_db():
             ids.extend(id_x)
         print("zettels:", len(list(zettels)))
         print("document splits:", len(docs))
-
-#        embedding = OpenAIEmbeddings(
-#            api_key=api_key, base_url=base_url, model=ai_cfg.embeddings_engine
-#        )
-        embedding = get_embedder("retrieval_document")
+        embedding = get_embedder_factory()()
         _ = Chroma.from_documents(
             documents=docs,
             client_settings=Settings(anonymized_telemetry=False),
