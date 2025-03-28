@@ -1,12 +1,14 @@
 
 import jinja2
 
-generate_article_template = """Please generate a short article on the following topic: {{title}}.
-Do not output anything apart from the short article. 
+generate_article_template = """Please generate a Zettel for a Zettelkasten on the following topic: {{title}}.
 Write the article in {{language}}. 
 Use Markdown to format the document. For the markup of sections and sub-sections, 
 only use hash-tags (like this: '# Title' or '## Subsection'), and do not use any 
-"-" or "=" to underline sections names.
+"-" or "=" to underline sections names. At the end of the Zettel, add a section containing 
+possible links to other Zettels. 
+
+Only return the markdown content of the Zettel.
 {% if additional_input %}
 {{additional_input}}
 {% endif %}
@@ -17,8 +19,7 @@ generate_tags_template = """Output a list of (at most 5) hashtags from this text
 can be used to categorize the content. Do not include the hash sign (#), and
 format the tags in lower case. Join words with a minus sign.
 {% if tags %}
-Here is a list of pre-exisiting tags. Use them where appropriate, or invent new ones 
-when neccessary, in the format of the existing ones:
+Here is a list of pre-exisiting tags which you could use (or invent new ones):
 {{ tags }}
 {% else %}
 Valid tags look like 'operations-technolog', 'itot-convergence', 'linux-distributions'

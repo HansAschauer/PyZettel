@@ -1,11 +1,9 @@
-from ...ai.embeddings import (
-    EmbeddingClient,
-    embedding_from_string,
-)
+from ...ai.embeddings import embedding_from_string
 from pyzettel.exceptions import ZettelNotFound
 from pyzettel.utils import filename_from_id
 from pyzettel.zettel import Zettel
 from pyzettel.config import Config
+from pyzettel.cli.plugins import get_embedder_factory, RessourceNotFound
 from .models import ZettelIndex
 import click
 import numpy as np
@@ -44,12 +42,7 @@ def update(ctx: click.Context):
 
     ai_options = config.ai_options
     assert ai_options is not None
-    embeddings_client = EmbeddingClient(
-        ai_options.base_url,
-        ai_options.api_key,
-        ai_options.embeddings_engine,
-        ai_options.embeddings_max_tokens,
-    )
+    embedder = get_embedder_factory()()
 
     with ZettelIndex.use(get_zettel_index_file_name(config)) as zettel_index:
         for f in zettelkasten_dir.glob("*.md"):
@@ -59,7 +52,7 @@ def update(ctx: click.Context):
                 logger.debug(
                     f"Generate or update index for zettel {z.frontmatter.id}, {z.frontmatter.title}"
                 )
-                zettel_index.add_or_update_zettel(z, config, embeddings_client)
+                zettel_index.add_or_update_zettel(z, config, embedder)
             except ValueError:
                 logger.warning(f"File {f} is not in valid zettel format.")
 
@@ -70,16 +63,9 @@ def update(ctx: click.Context):
 def search(ctx: click.Context, search_string: str):
     "Perform semantic search, using 'SEARCH_STRING'"
     config = ctx.obj.config
-    ai_options = config.ai_options
-    assert ai_options is not None
-    embeddings_client = EmbeddingClient(
-        ai_options.base_url,
-        ai_options.api_key,
-        ai_options.embeddings_engine,
-        ai_options.embeddings_max_tokens,
-    )
+    embedder = get_embedder_factory()()
 
-    search_embedding = embeddings_client.get_embedding(search_string)
+    search_embedding = embedder.embed_query(search_string)
 
     with ZettelIndex.use(get_zettel_index_file_name(config)) as zettel_index:
         title_embeddings = [
@@ -138,6 +124,7 @@ def search(ctx: click.Context, search_string: str):
 @click.group()
 def index():
     pass
+
 
 index.add_command(update)
 

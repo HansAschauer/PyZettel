@@ -2,14 +2,14 @@ from dataclasses import dataclass, field
 from pyzettel.utils import YAMLSerializable, filename_from_id
 from pyzettel.zettel import Zettel
 from pyzettel.config import Config
-from ...ai.embeddings import EmbeddingClient, embedding_to_string, embedding_from_string
-import re
+from ...ai.embeddings import embedding_to_string
+from pyzettel.cli.plugins import get_embedder_factory
 from contextlib import contextmanager
 from typing import Self
 from collections.abc import Iterator
 from pathlib import Path
 from hashlib import sha256
-
+from langchain_core.embeddings import Embeddings
 import logging
 
 logger = logging.getLogger(__name__)
@@ -28,23 +28,16 @@ class ZettelIndexEntry:
         cls,
         zettel: Zettel,
         config: Config,
-        embeddings_client: EmbeddingClient | None = None,
+        embedder: Embeddings | None = None,
     ) -> Self:
         z_id = zettel.frontmatter.id
         f_name = Path(filename_from_id(z_id, config))
         mtime = f_name.stat().st_mtime
         hash = cls.calc_hash(zettel.content)
-        if embeddings_client is None:
-            ai_options = config.ai_options
-            assert ai_options is not None
-            embeddings_client = EmbeddingClient(
-                ai_options.base_url,
-                ai_options.api_key,
-                ai_options.embeddings_engine,
-                ai_options.embeddings_max_tokens,
-            )
-        embedding_content = embeddings_client.get_embedding(zettel.content)
-        embedding_title = embeddings_client.get_embedding(zettel.frontmatter.title)
+        if embedder is None:
+            embedder = get_embedder_factory()()
+        embedding_content = embedder.embed_documents([zettel.content])[0]
+        embedding_title = embedder.embed_documents([zettel.frontmatter.title])[0]
         return cls(
             z_id,
             mtime,
@@ -83,7 +76,7 @@ class ZettelIndex(YAMLSerializable):
         self,
         zettel: Zettel,
         config: Config,
-        embeddings_client: EmbeddingClient | None = None,
+        embedding: Embeddings | None = None,
     ):
         if zettel.frontmatter.id in self.zettel_entries:
             zie = self.zettel_entries[zettel.frontmatter.id]
@@ -93,5 +86,5 @@ class ZettelIndex(YAMLSerializable):
                 ZettelIndexEntry.calc_hash(zettel.content) == zie.zettel_content_hash
             ):
                 return
-        zie = ZettelIndexEntry.from_zettel(zettel, config, embeddings_client)
+        zie = ZettelIndexEntry.from_zettel(zettel, config, embedding)
         self.zettel_entries[zettel.frontmatter.id] = zie

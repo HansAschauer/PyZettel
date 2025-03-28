@@ -3,12 +3,41 @@ from openai import OpenAI
 from dataclasses import dataclass, field
 from base64 import b64encode, b64decode
 from more_itertools import chunked
-
+from langchain_core.embeddings import Embeddings
+from ...cli.plugins import get_embedder_factory, RessourceNotFound
 # Some methods take ideas from openai-cookbook:
 # https://github.com/openai/openai-cookbook/blob/main/examples/utils/embeddings_utils.py
 # and from the pyhton cookbook
 @dataclass
 class EmbeddingClient:
+    base_url: str
+    api_key: str
+    engine: str
+    embeddings_max_tokens: int
+
+    embedding: Embeddings = field(init=False)
+    
+    def __post_init__(self):
+        self.embedding = get_embedder_factory()()
+
+    def get_embeddings(
+        self, list_of_text: list[str], **kwargs
+    ) -> list[np.ndarray]:
+        assert len(list_of_text) <= 2048, "The batch size should not be larger than 2048."
+
+        # replace newlines, which can negatively affect performance.
+        list_of_text = [text.replace("\n", " ") for text in list_of_text]
+
+        data = self.embedding.embed_documents(list_of_text,  **kwargs)
+        return [np.array(d, dtype=np.float32) for d in data]
+
+
+    def get_embedding(self, text: str, **kwargs) -> np.ndarray:
+        chunks = chunked_string(text, self.embeddings_max_tokens)
+        embeddings = self.get_embeddings(chunks,  **kwargs)
+        return embedding_avg(chunks, embeddings)
+        
+class EmbeddingClient_:
     base_url: str
     api_key: str
     engine: str
@@ -65,8 +94,11 @@ def cosine_similarity(a, b):
     return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 
-def embedding_to_string(embedding: np.ndarray) -> str:
-    embedding = embedding.astype(np.float32)
+def embedding_to_string(embedding: np.ndarray | list[float]) -> str:
+    if isinstance(embedding, list):
+        embedding = np.array(embedding, dtype=np.float32)
+    else:
+        embedding = embedding.astype(np.float32)
     return b64encode(embedding.tobytes()).decode("utf-8")
 
 def embedding_from_string(embedding_str: str) -> np.ndarray:

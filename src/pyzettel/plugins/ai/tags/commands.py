@@ -5,11 +5,12 @@ from .models import Tagsfile, Tag
 from .utils import replace_tag_in_zettel, get_tagsfile_name
 from pyzettel.utils import filename_from_id
 from ...ai.embeddings import (
-    EmbeddingClient,
     embedding_from_string,
     embedding_to_string,
     similarity_matrix,
 )
+from langchain_core.embeddings import Embeddings
+from pyzettel.cli.plugins import get_embedder_factory, RessourceNotFound
 import pathlib
 import numpy as np
 
@@ -120,18 +121,14 @@ def replace(ctx: click.Context, tag_spec: str):
 @click.pass_context
 def sync(ctx: click.Context):
     """Sync tags in tagsfile with PyZettel's tags database"""
+    embedder: Embeddings | None = None
     config = ctx.obj.config
     tags_file = get_tagsfile_name(config)
-    if config.ai_options is None:
-        logging.debug("No AI options in config. Cannot generate embeddings.")
-        embeddings_client = None
-    else:
-        embeddings_client = EmbeddingClient(
-            config.ai_options.base_url,
-            config.ai_options.api_key,
-            config.ai_options.embeddings_engine,
-            config.ai_options.embeddings_max_tokens,
-        )
+    try:
+        embedder = get_embedder_factory()()
+    except RessourceNotFound:
+        logger.info("Embedder not found")
+        embedder = None
     with Tagsfile.use(tags_file) as tagsfile:
         zettelkasten_dir = (
             pathlib.Path(config.zettelkasten_proj_dir) / config.zettelkasten_subdir
@@ -146,10 +143,10 @@ def sync(ctx: click.Context):
             for tag_string in tags:
                 if tag_string not in tagsfile.tags:
                     logger.debug(f"Adding tag {tag_string}")
-                    if embeddings_client is not None:
+                    if embedder is not None:
                         logger.debug(f"Getting embedding for tag {tag_string}")
                         embedding = embedding_to_string(
-                            embeddings_client.get_embedding(tag_string)
+                            embedder.embed_documents([tag_string])[0]
                         )
                     else:
                         embedding = ""
