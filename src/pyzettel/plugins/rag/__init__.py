@@ -20,10 +20,6 @@ except ImportError as e:
 os.environ["LANGSMITH_TRACING_V2"] = "false"
 
 
-def set_config(conf: dict):
-    conf_module.config = conf
-
-
 config = conf_module.config
 
 
@@ -36,4 +32,19 @@ def rag():
 rag.add_command(init_db)
 rag.add_command(ask)
 rag.add_command(update)
+
+
+# Plugin interface as defined in pyzettel.cli.plugins.PluginModule
+
+
+def set_config(conf: dict):
+    conf_module.config = conf
+
+
 commands = [rag]
+
+
+embedder_factory = None
+llm_factory = None
+vector_store_factory = None
+hooks = {}

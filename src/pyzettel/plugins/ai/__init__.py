@@ -17,8 +17,6 @@ except ImportError as e:
         f"Missing dependencies for plugin. Disable plugin to get rid of this warning: {e}"
     ) from e
 
-def set_config(conf: dict):
-    conf_module.config = conf
     
 config = conf_module.config
 
@@ -34,4 +32,15 @@ ai.add_command(index)
 ai.add_command(tags)
 ai.add_command(create)
 
+# Plugin interface as defined in pyzettel.cli.plugins.PluginModule
+
+def set_config(conf: dict):
+    conf_module.config = conf
+
 commands = [ai]
+
+embedder_factory = None
+llm_factory = None
+vector_store_factory = None
+
+hooks = {}
