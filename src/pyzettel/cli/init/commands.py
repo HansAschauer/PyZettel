@@ -1,10 +1,9 @@
 import click
 import platformdirs
-from click_loglevel import LogLevel
 
 import pathlib
 
-from ...config import Config, AIOptions
+from ...config import Config
 
 default_data_path = platformdirs.user_data_path("pyzettel")
 cache_dir = platformdirs.user_cache_path("pyzettel")
@@ -101,9 +100,6 @@ def init(
     else:
         config_file_path.parent.mkdir(parents=True, exist_ok=True)
         config = Config(zettelkasten_proj_dir=zettelkasten_dir, id_template=id_template)
-        ai_options = AIOptions()
-        config.ai_options = ai_options
-        print(config)
         config_yaml = config.to_yaml()
         with open(config_file_path, "w") as f:
             f.write(config_yaml)
