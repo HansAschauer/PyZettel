@@ -47,10 +47,10 @@ class CLIContext:
 @click.pass_context
 def pyzettel(ctx: click.Context, config_file: str, log_level: int):
     "pyzettel command line interface"
-    # remove logging handlers, as described here: https://stackoverflow.com/a/12158233
-    for handler in logging.root.handlers[:]:
-        logging.root.removeHandler(handler)
-    logging.basicConfig(level=log_level)
+    ## remove logging handlers, as described here: https://stackoverflow.com/a/12158233
+    #for handler in logging.root.handlers[:]:
+    #    logging.root.removeHandler(handler)
+    logging.basicConfig(level=log_level, force=True)
     try:
         config = load_config(config_file)
     except ValueError:
