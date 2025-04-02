@@ -39,11 +39,13 @@ def update(ctx: click.Context):
     zettelkasten_dir = (
         pathlib.Path(config.zettelkasten_proj_dir) / config.zettelkasten_subdir
     )
-
-    ai_options = config.ai_options
-    assert ai_options is not None
-    embedder = get_embedder_factory()()
-
+    try:
+        embedder = get_embedder_factory()() 
+    except RessourceNotFound:
+        logger.error(
+            "No embedder found. Please enable a plugin that provides an embedder."
+        )
+        raise
     with ZettelIndex.use(get_zettel_index_file_name(config)) as zettel_index:
         for f in zettelkasten_dir.glob("*.md"):
             logger.debug(f"Using file {f}")

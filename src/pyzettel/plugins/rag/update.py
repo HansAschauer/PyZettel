@@ -9,7 +9,6 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_chroma import Chroma
 from chromadb.config import Settings
 
-from langchain_core.utils.utils import convert_to_secret_str
 from langchain_core.documents import Document
 from langsmith import tracing_context
 from pyzettel.zettel import Zettel
@@ -17,7 +16,7 @@ from pyzettel.zettel import Zettel
 from .zettel_splitter import zettel_to_docs
 
 import click
-from pyzettel.cli.plugins import get_embedder_factory, get_llm_factory
+from pyzettel.cli.plugins import get_embedder_factory, RessourceNotFound
 
 from .config import config#, get_embedder
 
@@ -35,8 +34,6 @@ def update(ctx: click.Context, llm_model: str | None):
     os.environ["LANGCHAIN_API_KEY"] = "xx"
     with tracing_context(enabled=False):
         cfg = ctx.obj.config
-        ai_cfg = cfg.ai_options
-        assert ai_cfg is not None
 
         chroma_data_dir = (
             pathlib.Path(
@@ -46,13 +43,13 @@ def update(ctx: click.Context, llm_model: str | None):
             )
             / "chroma_data"
         )
-        if llm_model is None:
-            llm_model = config.get("llm_model", ai_cfg.engine)
-            assert isinstance(llm_model, str)
-
-
-        embedding = get_embedder_factory()()
-
+        try:
+            embedding = get_embedder_factory()()
+        except RessourceNotFound:
+            logger.error(
+                "No embedder found. Please enable a plugin that provides an embedder."
+            )
+            raise
         vectordb = Chroma(
             client_settings=Settings(anonymized_telemetry=False),
             persist_directory=str(chroma_data_dir), embedding_function=embedding

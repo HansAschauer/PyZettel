@@ -38,25 +38,25 @@ google_task_type_mapping: dict[str|None, str|None] = {
 }
 
 
-def get_embedder(
-    task_type: Literal[
-        "semantic_similarity",
-        "retrieval_document",
-        "retrieval_query",
-        "question_ansering",
-        "fact_verification",
-        "classification",
-        "clustering",
-        None
-    ],
-) -> Union[OpenAIEmbeddings, GoogleGenerativeAIEmbeddings]:
-    kwargs = {}
-    if config["api_name"] == "google":
-        kwargs.update(
-            {
-                "task_type": google_task_type_mapping[task_type],
-            }
-        )
-    kwargs.update({config["api_key_keyword"]: config["api_key"]})
-    kwargs.update(config.get("additional_embedder_init_options", {}))  # type: ignore
-    return embedding_name_to_class[config["api_name"]](**kwargs)
+# def get_embedder(
+#     task_type: Literal[
+#         "semantic_similarity",
+#         "retrieval_document",
+#         "retrieval_query",
+#         "question_ansering",
+#         "fact_verification",
+#         "classification",
+#         "clustering",
+#         None
+#     ],
+# ) -> Union[OpenAIEmbeddings, GoogleGenerativeAIEmbeddings]:
+#     kwargs = {}
+#     if config["api_name"] == "google":
+#         kwargs.update(
+#             {
+#                 "task_type": google_task_type_mapping[task_type],
+#             }
+#         )
+#     kwargs.update({config["api_key_keyword"]: config["api_key"]})
+#     kwargs.update(config.get("additional_embedder_init_options", {}))  # type: ignore
+#     return embedding_name_to_class[config["api_name"]](**kwargs)

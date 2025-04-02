@@ -12,9 +12,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class Conversation:
-    base_url: str
-    api_key: str
-    engine: str
+    #base_url: str
+    #api_key: str
+    #engine: str
     developer_prompt: str = "you are a helpful assistant"
     llm: BaseChatModel = field(init=False)
     messages: list[BaseMessage] = field(init=False, default_factory=list)  

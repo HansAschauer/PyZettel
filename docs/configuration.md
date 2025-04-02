@@ -20,29 +20,41 @@ PyZettel has two main configuration files:
 
 ```yaml
 plugins:
-  pyzettel.plugins.ai:
   pyzettel.plugins.hello:
+    enabled: true
+    options:
+      dummy_option: dummy_value
   pyzettel.plugins.rag:
-    api_name: "google"
-    api_key: "google-cloud api key"
-    api_key_keyword: "google_api_key"
-    additional_embedder_init_options:
-      model: "models/embedding-001"    
+    enabled: true
+    options:
+      chroma_data_dir: /home/hans/.local/share/pyzettel-ask
+
+  pyzettel.plugins.ai:
+    enabled: true
+  pyzettel.plugins.google_genai:
+    enabled: false
+    options:
+      api_key: GOOGLE-CLOUD-api-key
+      llm_model: gemini-2.0-flash-lite
+      embeddings_model: text-embedding-004
+  pyzettel.plugins.openai:
+    enabled: true
+    options:
+      api_key: OPENAI-API-key
+      # base_url: https://api.example.org/llm/
+      embeddings_model: text-embedding-ada-002
+      llm_model: gpt-3.5-turbo
+
 loader_config:
-  log_level: WARNING
-```
+  log_level: WARNING```
 
 ## `pyzettel`
 
 ```yaml
-id_template: '{{now | hexdate(12)}}'
-zettelkasten_proj_dir: /home/hans/zettelkasten
-zettelkasten_subdir: docs
 editor: code
 editor_args: []
-ai_options:
-    base_url: https://generativelanguage.googleapis.com/v1beta/openai/
-    api_key: "google-cloud api key"
-    engine: gemini-2.0-flash-lite
-    embeddings_engine: text-embedding-004
+id_template: '{{now | hexdate(12)}}'
+zettelkasten_proj_dir: /home/hans/zettelkasten/
+zettelkasten_subdir: docs
+opencitations_api_key: 
 ```

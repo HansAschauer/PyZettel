@@ -1,6 +1,7 @@
 from .conversation import Conversation
 from pyzettel.config import Config
 from .prompts import generate_improve_zettel
+from ...cli.plugins import RessourceNotFound
 
 
 def improve_zettel(
@@ -9,14 +10,12 @@ def improve_zettel(
     improve_regards: list[str],
     language: str | None,
 ) -> str:
-    if config.ai_options is None:
-        raise ValueError("AIOptions is required to use this function")
-    conversation = Conversation(
-        base_url=config.ai_options.base_url,
-        api_key=config.ai_options.api_key,
-        engine=config.ai_options.engine,
-        developer_prompt="you are a helpful assistant, who provides only output when asked for it. Without any other text added.",
-    )
+    try:
+        conversation = Conversation(
+            developer_prompt="you are a helpful assistant, who provides only output when asked for it. Without any other text added.",
+        )
+    except RessourceNotFound:
+        raise ValueError("No LLM found. Please enable a plugin that provides an LLM.")
     article = conversation.ask(
         generate_improve_zettel(
             document, improve_regards, language=language, 

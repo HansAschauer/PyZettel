@@ -27,10 +27,7 @@ def create(
     tag = list(tag)
     content = f"# {title}\n"
     if language is None:
-        if config.ai_options is not None:
-            language = config.ai_options.default_gen_language
-        else:
-            language = "english"  # hard coded default
+        language = config.language
     existing_tags = get_tags(config)
     article, tags = generate_from_title(
         title,

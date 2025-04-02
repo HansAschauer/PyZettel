@@ -2,7 +2,9 @@ from .conversation import Conversation
 from pyzettel.config import Config
 from .schema import Tags
 from .prompts import generate_article, generate_tags
-
+from ...cli.plugins import RessourceNotFound
+import logging
+logger = logging.getLogger(__name__)
 
 def generate_from_title(
     title: str,
@@ -11,14 +13,12 @@ def generate_from_title(
     existing_tags: list[str] = [],
     additional_input: str = "",
 ) -> tuple[str, dict[str, str]]:
-    if config.ai_options is None:
-        raise ValueError("AIOptions is required to use this function")
-    conversation = Conversation(
-        base_url=config.ai_options.base_url,
-        api_key=config.ai_options.api_key,
-        engine=config.ai_options.engine,
-        developer_prompt="you are a helpful assistant, who provides only output when asked for it. Without any other text added.",
-    )
+    try:
+        conversation = Conversation(
+            developer_prompt="you are a helpful assistant, who provides only output when asked for it. Without any other text added.",
+        )
+    except RessourceNotFound:
+        raise ValueError("No LLM found. Please enable a plugin that provides an LLM.")
     article = conversation.ask(
         generate_article(
             title=title, language=language, additional_input=additional_input

@@ -3,6 +3,7 @@ from pyzettel.zettel import Zettel, Frontmatter
 from pyzettel.config import Config
 from .schema import Tags
 from .prompts import generate_tags
+from ...cli.plugins import RessourceNotFound
 from bs4 import BeautifulSoup
 import requests
 import pathlib
@@ -18,8 +19,6 @@ def zettel_from_url(
 ) -> Zettel:
     if existing_tags is None:
         existing_tags = []
-    if config.ai_options is None:
-        raise ValueError("AIOptions is required to use this function")
     if url is not None:
         page_content = requests.get(url).content
     elif from_file is not None:
@@ -28,18 +27,17 @@ def zettel_from_url(
         raise ValueError("One of 'url' or 'from_file' must be given.")
 
     soup = BeautifulSoup(page_content, "html.parser")
-    conversation = Conversation(
-        base_url=config.ai_options.base_url,
-        api_key=config.ai_options.api_key,
-        engine=config.ai_options.engine,
-        developer_prompt="you are a helpful assistant, who provides only output when asked for it. Without any other text added.",
-    )
+    try:
+        conversation = Conversation(
+            developer_prompt="you are a helpful assistant, who provides only output when asked for it. Without any other text added.",
+        )
+    except RessourceNotFound:
+        raise ValueError("No LLM found. Please enable a plugin that provides an LLM.")
     _ = conversation.ask(
         "In the following task, consider the text between <begin> and <end> as the input text."
         + f"<begin>{soup.get_text()}<end>. Do not output anything."
     )
     tags = conversation.ask_json(generate_tags(existing_tags), model=Tags)
-    print("xxx tags", tags)
     title = conversation.ask("Output a title of the text")
     author = conversation.ask("""Output the author of the text, if you find reliable data. 
                               Otherwise, output 'None'""")

@@ -12,11 +12,10 @@ class Config(YAMLSerializable):
     id_template: str = "{{now | hexdate(12)}}"
     editor: str = "code"
     editor_args: list[str] = field(default_factory=list)
-    #ai_options: AIOptions | None = None
     zettelkasten_paper_dir: str = ""
     bibtex_file: str = ""
     opencitations_api_key: str = ""
-
+    language: str = "english"
 
 def load_config(config_file_name: str) -> "Config":
     config_file_path = pathlib.Path(config_file_name)
