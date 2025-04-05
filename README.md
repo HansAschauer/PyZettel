@@ -93,6 +93,26 @@ Commands:
   hello
 ```
 
+## Using LMM (AI)
+
+In order to use the AI features, you  need API access to large language models (LLM) and embedding models. At this point in time, two APIs can be used through the plugin interface:
+
+- [Open AI](https://platform.openai.com/docs/overview): The most prominent
+  provider for this API is, of course, OpenAI. However, there are other LLMs
+  which provide a compatible API. If you do not use Open AI, you have to set the `base_url` parameter in the [plugin configuration](https://hansaschauer.github.io/PyZettel/configuration/).
+
+- [Google Gemini](https://aistudio.google.com/welcome): This API is mostly or exclusively used by Google Gemini.
+
+### API tokens and paid subscriptions
+For most API providers, an API key is required. Many providers have free tiers
+which might be ok for testing this software. For serious usage, in many cases a
+payed subscription will lead to more satisfying results, since free tiers are
+often rate limited.
+
+During development, I used a Goggle Gemini account, and the cumulative costs
+during the first several weeks were less than 0.05€.
+
+
 ## Contributing
 
 Contributions are welcome! Please submit a pull request or open an issue for feedback.
