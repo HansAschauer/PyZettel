@@ -85,10 +85,6 @@
               <ul class="nav flex-column">
               </ul>
             </li>
-            <li class="nav-item" data-bs-level="2"><a href="#pyzettel" class="nav-link">pyzettel</a>
-              <ul class="nav flex-column">
-              </ul>
-            </li>
               </ul>
             </li>
         </ul>
@@ -117,28 +113,43 @@ configured before the command line parser is set up.</p>
 </ul>
 <h2 id="pyzettel_plugins"><code>pyzettel_plugins</code></h2>
 <div class="highlight"><pre><span></span><code><span class="nt">plugins</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">pyzettel.plugins.ai</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">pyzettel.plugins.hello</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">dummy_option</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">dummy_value</span>
 <span class="w">  </span><span class="nt">pyzettel.plugins.rag</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">api_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;google&quot;</span>
-<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;google-cloud</span><span class="nv"> </span><span class="s">api</span><span class="nv"> </span><span class="s">key&quot;</span>
-<span class="w">    </span><span class="nt">api_key_keyword</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;google_api_key&quot;</span>
-<span class="w">    </span><span class="nt">additional_embedder_init_options</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;models/embedding-001&quot;</span><span class="w">    </span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">chroma_data_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/hans/.local/share/pyzettel-ask</span>
+
+<span class="w">  </span><span class="nt">pyzettel.plugins.ai</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">  </span><span class="nt">pyzettel.plugins.google_genai</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">GOOGLE-CLOUD-api-key</span>
+<span class="w">      </span><span class="nt">llm_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gemini-2.0-flash-lite</span>
+<span class="w">      </span><span class="nt">embeddings_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text-embedding-004</span>
+<span class="w">  </span><span class="nt">pyzettel.plugins.openai</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">enabled</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<span class="w">    </span><span class="nt">options</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OPENAI-API-key</span>
+<span class="w">      </span><span class="c1"># base_url: https://api.example.org/llm/</span>
+<span class="w">      </span><span class="nt">embeddings_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text-embedding-ada-002</span>
+<span class="w">      </span><span class="nt">llm_model</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gpt-3.5-turbo</span>
+
 <span class="nt">loader_config</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">log_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING</span>
-</code></pre></div>
-<h2 id="pyzettel"><code>pyzettel</code></h2>
-<div class="highlight"><pre><span></span><code><span class="nt">id_template</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{now</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">hexdate(12)}}&#39;</span>
-<span class="nt">zettelkasten_proj_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/hans/zettelkasten</span>
-<span class="nt">zettelkasten_subdir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs</span>
+<span class="w">  </span><span class="nt">log_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">WARNING```</span>
+
+<span class="c1">## `pyzettel`</span>
+
+<span class="err">```</span><span class="l l-Scalar l-Scalar-Plain">yaml</span>
 <span class="nt">editor</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">code</span>
 <span class="nt">editor_args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[]</span>
-<span class="nt">ai_options</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">base_url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://generativelanguage.googleapis.com/v1beta/openai/</span>
-<span class="w">    </span><span class="nt">api_key</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;google-cloud</span><span class="nv"> </span><span class="s">api</span><span class="nv"> </span><span class="s">key&quot;</span>
-<span class="w">    </span><span class="nt">engine</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gemini-2.0-flash-lite</span>
-<span class="w">    </span><span class="nt">embeddings_engine</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">text-embedding-004</span>
+<span class="nt">id_template</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;{{now</span><span class="nv"> </span><span class="s">|</span><span class="nv"> </span><span class="s">hexdate(12)}}&#39;</span>
+<span class="nt">zettelkasten_proj_dir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home/hans/zettelkasten/</span>
+<span class="nt">zettelkasten_subdir</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs</span>
+<span class="nt">opencitations_api_key</span><span class="p">:</span><span class="w"> </span>
 </code></pre></div></div>
             </div>
         </div>
