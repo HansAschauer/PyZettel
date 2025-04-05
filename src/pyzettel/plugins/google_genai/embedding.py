@@ -1,5 +1,5 @@
 from langchain_core.embeddings.embeddings import Embeddings
-from .conf_module import config
+from . import conf_module 
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from typing import Literal
 
@@ -15,4 +15,8 @@ def google_embedder(
         "clustering",
         None,
     ] = None,
-) -> Embeddings: ...
+) -> Embeddings:
+    kwargs = {}
+    if model := conf_module.config.get("embeddings_model"):
+        kwargs["model"] = model
+    return GoogleGenerativeAIEmbeddings(google_api_key=conf_module.config["api_key"], **kwargs,)
