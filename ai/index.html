@@ -68,11 +68,56 @@
     
     <div id="toc-collapse" class="navbar-collapse collapse card bg-body-tertiary">
         <ul class="nav flex-column">
+            
+            <li class="nav-item" data-bs-level="2"><a href="#ai-command-group" class="nav-link">AI command group</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
+            
+            <li class="nav-item" data-bs-level="2"><a href="#command-reference" class="nav-link">Command reference</a>
+              <ul class="nav flex-column">
+              </ul>
+            </li>
         </ul>
     </div>
 </div></div>
                     <div class="col-md-9" role="main">
 
+<h2 id="ai-command-group">AI command group</h2>
+<p>The commands in this group employ LLM and embedding models for the following tasks:</p>
+<ul>
+<li>
+<p><code>create</code>: This command allows you to create new zettels from scratch, using a
+  LLM. You provide the title of the zettel (<code>--title</code>/<code>-t</code>), and optionally
+  additional input (<code>--additional-input</code>/<code>-i</code>), and the LLM generates a new
+  zettel, along with a selection of tags.</p>
+</li>
+<li>
+<p><code>improve</code>: Improve an existing zettel, using a LLM. <code>--regards</code>/<code>-r</code> allows
+  you to tell the LLM, in which regards you want the improvement (can be given
+  several times). This command can also be used to translate the zettel
+  (<code>--language</code>/<code>-l</code>). The original zettel will not be overwritten, but the changed version will be appended to the original version.</p>
+</li>
+<li>
+<p><code>search</code>: Search for Zettels using sematic search</p>
+</li>
+<li>
+<p><code>scrape</code>: Scrape a web page and generate a new zettel which includes a summary of
+  the web page.</p>
+</li>
+<li>
+<p><code>tags</code>: This group allows you to work with tags. Not all commands in this
+  group use AI.</p>
+</li>
+<li>
+<p><code>find-similar</code>: Use semantic search to find similar tags. It will compare
+    all tags to all tags, and outputs the most similar tag pairs.</p>
+</li>
+<li><code>list</code>: list all tags</li>
+<li><code>replace</code>:       Replace a tag with another tag in all zettels.</li>
+<li><code>sync</code>:          Sync tags in tagsfile with PyZettel's tags database</li>
+</ul>
+<h2 id="command-reference">Command reference</h2>
 <div class="highlight"><pre><span></span><code>Usage:<span class="w"> </span>pyzettel<span class="w"> </span>ai<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
 
 <span class="w">  </span>AI<span class="w"> </span>commands<span class="w"> </span>group
