@@ -1,3 +1,33 @@
+## AI command group
+
+The commands in this group employ LLM and embedding models for the following tasks:
+
+- `create`: This command allows you to create new zettels from scratch, using a
+  LLM. You provide the title of the zettel (`--title`/`-t`), and optionally
+  additional input (`--additional-input`/`-i`), and the LLM generates a new
+  zettel, along with a selection of tags.
+
+- `improve`: Improve an existing zettel, using a LLM. `--regards`/`-r` allows
+  you to tell the LLM, in which regards you want the improvement (can be given
+  several times). This command can also be used to translate the zettel
+  (`--language`/`-l`). The original zettel will not be overwritten, but the changed version will be appended to the original version.
+
+- `search`: Search for Zettels using sematic search
+
+- `scrape`: Scrape a web page and generate a new zettel which includes a summary of
+  the web page.
+
+- `tags`: This group allows you to work with tags. Not all commands in this
+  group use AI.
+
+  - `find-similar`: Use semantic search to find similar tags. It will compare
+    all tags to all tags, and outputs the most similar tag pairs.
+  - `list`: list all tags
+  - `replace`:       Replace a tag with another tag in all zettels.
+  - `sync`:          Sync tags in tagsfile with PyZettel's tags database
+
+
+## Command reference
 
 ```bash
 Usage: pyzettel ai [OPTIONS] COMMAND [ARGS]...
